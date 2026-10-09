@@ -1,0 +1,39 @@
+{
+  "id": "tags",
+  "name": "タグ・メディア整理",
+  "version": "0.1.0-test",
+  "icon": "preview_color.svg",
+  "entrypoint": "fileworkbench.modules.tags.module",
+  "interface_entrypoint": "fileworkbench.modules.tags.interface",
+  "capabilities": [
+    "tags",
+    "search",
+    "metadata",
+    "image_preview",
+    "media_preview",
+    "move_plan",
+    "move_confirm"
+  ],
+  "accepted_inputs": [
+    "files"
+  ],
+  "emitted_events": [
+    "context.received",
+    "command.completed",
+    "module.error",
+    "tags.changed",
+    "files.will_change",
+    "files.changed"
+  ],
+  "commands": [
+    "refresh",
+    "set_files",
+    "list_tags",
+    "set_tags",
+    "search_tags",
+    "inspect",
+    "plan_move",
+    "move"
+  ],
+  "description": "外部SQLiteタグ、メディア情報、プレビュー、確認付きの移動"
+}

@@ -1,0 +1,36 @@
+# Pythonキャッシュ
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# ログ
+*.log
+logs/
+
+# ローカルデータベース
+*.db
+*.sqlite
+*.sqlite3
+
+# 一時ファイル
+*.tmp
+*.bak
+*.part
+
+# ビルド成果物
+build/
+dist/
+*.exe
+
+# エディター設定
+.vscode/
+.idea/
+
+# OS生成ファイル
+Thumbs.db
+.DS_Store
+
+# 自動生成された試験結果
+**/test_output/

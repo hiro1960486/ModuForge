@@ -1,0 +1,14 @@
+__init__.py: from .module import CompareModule
+interface.py: from ...interfaces import WidgetModuleAdapter
+interface.py: from ...module_registry import descriptor_for
+interface.py: from .module import CompareModule
+interface.py: from pathlib import Path
+module.py: from ...core.common import choose_folder, digest, app_icon
+module.py: from ...interfaces import ModuleContext
+module.py: from ...ui import ModuleWidget, PathEdit, run_job
+module.py: from ...ui.common import FileTable, FileTree, SortableItem, TreeItem
+module.py: from PySide6.QtCore import Qt
+module.py: from PySide6.QtGui import QColor
+module.py: from PySide6.QtGui import QCursor
+module.py: from PySide6.QtWidgets import *
+module.py: from pathlib import Path
