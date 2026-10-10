@@ -7,9 +7,9 @@ from PySide6.QtCore import Qt, QUrl
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QLabel, QSlider, QFileDialog, QDialog, QTableWidget,
-    QTableWidgetItem, QHeaderView, QMessageBox
+    QTableWidgetItem, QHeaderView, QMessageBox, QStackedWidget
 )
-from PySide6.QtGui import QDragEnterEvent, QDropEvent
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 
@@ -82,7 +82,8 @@ class MediaInfoWindow(QDialog):
 # ----------------------------------------------------------------------
 class PreviewModule(ModuleWidget):
     module_name = 'プレビュー'
-    SUPPORTED_EXTS = {
+    IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"}
+    SUPPORTED_EXTS = IMAGE_EXTS | {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".webm",
         ".mp3", ".m4a", ".wav", ".flac", ".aac", ".ogg", ".wma"
     }
@@ -120,7 +121,14 @@ class PreviewModule(ModuleWidget):
         self.player.setVideoOutput(self.video_widget)
         self.video_widget.setStyleSheet("background-color: #000;")
         self.video_widget.setAcceptDrops(False)
-        layout.addWidget(self.video_widget, 1)
+        self.image_label = QLabel("画像を選択してください", self)
+        self.image_label.setAlignment(Qt.AlignCenter)
+        self.image_label.setStyleSheet("background-color: #111; color: #ddd;")
+        self._image_pixmap = None
+        self.preview_stack = QStackedWidget(self)
+        self.preview_stack.addWidget(self.video_widget)
+        self.preview_stack.addWidget(self.image_label)
+        layout.addWidget(self.preview_stack, 1)
 
         self.status_msg = QLabel("再生を押してください。対応形式は搭載コーデックによります")
         self.status_msg.setStyleSheet("color: #444; font-size: 12px; padding: 4px;")
@@ -281,7 +289,7 @@ class PreviewModule(ModuleWidget):
     def _select_file(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "ファイルを開く", "",
-            "メディアファイル (*.mp4 *.mkv *.avi *.mov *.mp3 *.m4a *.wav *.flac);;すべてのファイル (*.*)"
+            "画像・メディア (*.png *.jpg *.jpeg *.bmp *.gif *.webp *.mp4 *.mkv *.avi *.mov *.mp3 *.m4a *.wav *.flac);;すべてのファイル (*.*)"
         )
         if path:
             folder = Path(path).parent
@@ -307,9 +315,57 @@ class PreviewModule(ModuleWidget):
         self.current_path = self.playlist[self.current_index]
         self.path_label.setText(self.current_path)
         self.index_label.setText(f"{self.current_index + 1} / {len(self.playlist)}")
-        self.player.setSource(QUrl.fromLocalFile(self.current_path))
-        self.player.play()
+        path = Path(self.current_path)
+        if path.suffix.lower() in self.IMAGE_EXTS:
+            self.player.stop()
+            self.player.setSource(QUrl())
+            pixmap = QPixmap(str(path))
+            self.preview_stack.setCurrentWidget(self.image_label)
+            self._image_pixmap = pixmap if not pixmap.isNull() else None
+            self._render_image()
+            self.status_msg.setText("画像を表示中" if self._image_pixmap else "画像を読み込めませんでした")
+            self.btn_play.setEnabled(False)
+            self.btn_pause.setEnabled(False)
+            self.btn_stop.setEnabled(False)
+            self.seek_slider.setEnabled(False)
+            self._update_time_label(0, 0)
+        elif path.suffix.lower() in self.SUPPORTED_EXTS:
+            self._image_pixmap = None
+            self.preview_stack.setCurrentWidget(self.video_widget)
+            self.btn_play.setEnabled(True)
+            self.btn_pause.setEnabled(True)
+            self.btn_stop.setEnabled(True)
+            self.seek_slider.setEnabled(True)
+            self.player.setSource(QUrl.fromLocalFile(self.current_path))
+            self.player.play()
+        else:
+            self.player.stop()
+            self.player.setSource(QUrl())
+            self._image_pixmap = None
+            self.preview_stack.setCurrentWidget(self.image_label)
+            self.image_label.setText("この形式はメディアプレビューに対応していません")
+            self.status_msg.setText("非対応のファイル形式")
+            self.btn_play.setEnabled(False)
+            self.btn_pause.setEnabled(False)
+            self.btn_stop.setEnabled(False)
+            self.seek_slider.setEnabled(False)
+            self._update_time_label(0, 0)
         self._refresh_dialog()
+
+    def _render_image(self):
+        if self._image_pixmap is None:
+            self.image_label.setPixmap(QPixmap())
+            self.image_label.setText("画像を読み込めませんでした")
+            return
+        self.image_label.setText("")
+        size = self.image_label.size()
+        if size.width() > 0 and size.height() > 0:
+            self.image_label.setPixmap(self._image_pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self._image_pixmap is not None:
+            self._render_image()
 
     def _prev_file(self):
         if self.playlist and self.current_index > 0:
