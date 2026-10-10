@@ -52,7 +52,7 @@ def main():
             errors.append("Missing: " + str(dest))
         elif digest(src) != digest(new_file):
             if src.name in MODIFIED_BATS and dest == Path("scripts") / src.name:
-                intentional.append(str(dest))
+                intentional.append(dest.as_posix())
                 script = new_file.read_text(encoding="utf-8-sig")
                 if "%~dp0.." not in script or "run_" not in src.name and "run_tests.py" not in script:
                     errors.append("Invalid migrated BAT: " + str(dest))
