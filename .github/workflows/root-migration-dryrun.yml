@@ -1,10 +1,6 @@
 name: Root migration dry-run
 on:
   pull_request:
-    paths:
-      - 'scripts/prepare_root_layout.py'
-      - '.github/workflows/root-migration-dryrun.yml'
-      - 'FW33/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -13,12 +9,10 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate safe migration code syntax
-        run: python -m py_compile scripts/prepare_root_layout.py
-      - name: Run copy-only plan in inspection mode
-        run: python scripts/prepare_root_layout.py
+      - name: Compile migration tools
+        run: python -m py_compile scripts/prepare_root_layout.py scripts/audit_flat_layout.py
+      - name: Verify copy-only migration state
+        run: python scripts/audit_flat_layout.py
