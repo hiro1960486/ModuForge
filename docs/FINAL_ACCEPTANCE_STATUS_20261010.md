@@ -44,3 +44,50 @@ See RENAME_SAFETY_TEST_REPORT_20261010.md, TAGS_SAFETY_TEST_REPORT_20261010.md, 
 Remaining whole-module functionality, media/export/API integration, licensing, legacy-reference cleanup and local staging reconciliation still block final consolidation/release.
 PR #1 remains Draft. No stable release or legacy removal is authorized by a successful structural check alone.
 Management policy: [REPOSITORY_CONSOLIDATION_20261010.md](REPOSITORY_CONSOLIDATION_20261010.md).
+
+## Windows受入状況の更新（2026-10-10 22時台 JST）
+
+記録時のブランチHEAD：52561f3。
+利用者提供のPowerShell出力・画面・操作報告に基づく。
+上記の過去時点の未完了記述は、以下の確認範囲について更新する。
+
+### 今回確認した結果
+
+- 正式作業先は E:\00_GitHub\ModuForge。旧stagingは保管名へ変更済み。
+  作業先の一本化と比較判定は LOCAL_STAGING_REVIEW_20261010.md に記録済み。
+  保管資料すべての内容一致を証明するものではない。
+- 共通ジョブ処理：正常終了を停止扱いにする不具合を9144591で修正。
+  正常終了と実際の停止ボタンを使ったQt試験がPASS。
+- Preview：TXT本文表示とメディア情報を開いた際の更新を8465f72で修正。
+  画像・TXT表示、試験した音声/動画の基本再生操作と終了後のロック解除を確認。
+  音声再生時のAAC警告ログは原因未解決であり、全形式の再生保証とはしない。
+- Tags：対象一覧へのD&Dを5e5496cで修正。
+  単一ファイルの追加と再ドロップ時の重複防止を確認。
+- 最新のWindows回帰試験：44件、4.331秒、全件OK。
+  ログ：test_all_20261010_215708_227805.log。
+  この試験結果を最新HEADのGitHub Actions合格とは扱わない。
+
+### ファイル操作のSHA256照合
+
+隔離したTemp試験フォルダーの256バイト生成データを使用。
+既知SHA256：40AFF2E9D2D8922E47AFD4648E6967497158785FBD1DA870E7110266BF944880。
+
+- Organizer COPY：元の内容不変、コピー先の内容一致を確認。
+- Organizer MOVE：元の不在、移動先の内容一致、既存コピーの不変を確認。
+- Rename：sample.bin → renamed.bin の旧名不在と内容一致を確認。
+- Tags MOVE：元の不在、移動先の内容一致、画面上のタグ保持を確認。
+
+詳細は以下の追記を参照する。
+- TAGS_SAFETY_TEST_REPORT_20261010.md
+- ORGANIZER_SAFETY_TEST_REPORT_20261010.md
+- RENAME_SAFETY_TEST_REPORT_20261010.md
+
+### 継続する残件と判定
+
+確認した単一ファイルの内容保持はPASS。
+全モード・複数ファイル・失敗経路・復元の受入完了を意味しない。
+全8部品の受入結果整理、メディア/出力/APIの残件確認、隔離環境での実ごみ箱復元、
+依存ライセンス確認、FW33参照整理、最新CI結果、main保護と最終レビューは継続する。
+
+PR #1はDraft維持。最終マージ・正式リリースはBLOCKED。
+旧FW33と保管stagingを保持し、FileWorkbench Nextへは組み込まない。
