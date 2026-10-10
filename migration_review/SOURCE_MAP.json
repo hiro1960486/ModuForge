@@ -1,0 +1,131 @@
+{
+  "source_archive": "FileWorkbench_Next_3.3_RC_Development_Derivative_TestFix.zip",
+  "source_version": "4",
+  "files": [
+    {
+      "path": "01_tree/module/__init__.py",
+      "sha256": "53ef779976cc141d784cde6ff55b57069b9815257640afb42c3e11e49dd14211",
+      "original_path": "src/fileworkbench/modules/tree/__init__.py"
+    },
+    {
+      "path": "01_tree/module/module.py",
+      "sha256": "771b112442beedf9481d23628c5135acc608ca2c08197fea62a7d91f993447f3",
+      "original_path": "src/fileworkbench/modules/tree/module.py"
+    },
+    {
+      "path": "01_tree/api/module.json",
+      "sha256": "f866af000ab85dc5c2cdb45f346d5ac89719ea7fbff40d2728503af20d4f2360",
+      "original_path": "src/fileworkbench/modules/tree/module.json"
+    },
+    {
+      "path": "01_tree/api/interface.py",
+      "sha256": "a6913889c336e03904286210cc33aad33898227b50ae0372c62ca3d81be2b25a",
+      "original_path": "src/fileworkbench/modules/tree/interface.py"
+    },
+    {
+      "path": "02_rename/module/__init__.py",
+      "sha256": "08821a1ed1ddf9072a7620fbccb6c7ad5b1263e37768bf6b79f7895ce98f4c52",
+      "original_path": "src/fileworkbench/modules/rename/__init__.py"
+    },
+    {
+      "path": "02_rename/module/module.py",
+      "sha256": "e3c1c0266ba581783fddf38779b8afeef0a9ac3909f1ae72c180eae1fb556575",
+      "original_path": "src/fileworkbench/modules/rename/module.py"
+    },
+    {
+      "path": "02_rename/api/module.json",
+      "sha256": "346a3752c1560eda97dd3f53eb32795325be669e0ba24088f3994c627bc2b3c3",
+      "original_path": "src/fileworkbench/modules/rename/module.json"
+    },
+    {
+      "path": "02_rename/api/interface.py",
+      "sha256": "5e3ca2a477aa3f06aded3a2ba29277984c4629a4a5e614bf2b262f984270673d",
+      "original_path": "src/fileworkbench/modules/rename/interface.py"
+    },
+    {
+      "path": "03_preview/module/__init__.py",
+      "sha256": "20501ccea5f235a47249fe6f628fa849790468629f29da3454e57b6e8060432f",
+      "original_path": "src/fileworkbench/modules/preview/__init__.py"
+    },
+    {
+      "path": "03_preview/module/renderers.py",
+      "sha256": "50905bc333eae54344f60c5d09065be231bc11e859a7f43557172c7d0ec0c40a",
+      "original_path": "src/fileworkbench/modules/preview/renderers.py"
+    },
+    {
+      "path": "03_preview/module/module.py",
+      "sha256": "41a638856067472ebf42fa324e969425f54f838c0d4c0cc5b69bb444db476b62",
+      "original_path": "src/fileworkbench/modules/preview/module.py"
+    },
+    {
+      "path": "03_preview/api/module.json",
+      "sha256": "b4641d6754bb9ba5cf5375f30f82b5c0a1e78cea194091c0c4632843cf2cd721",
+      "original_path": "src/fileworkbench/modules/preview/module.json"
+    },
+    {
+      "path": "03_preview/api/interface.py",
+      "sha256": "74c0100f0c8f9f12a7c7ee6dfe80c730060363ece073eecda5a49e174f206ab8",
+      "original_path": "src/fileworkbench/modules/preview/interface.py"
+    },
+    {
+      "path": "04_compare/module/__init__.py",
+      "sha256": "f44579af468932ad2647821a3c44a434d7011a0535062dd77a56ccbec7d0b0fa",
+      "original_path": "src/fileworkbench/modules/compare/__init__.py"
+    },
+    {
+      "path": "04_compare/module/module.py",
+      "sha256": "dd958376d3acd6366a4c4de55e011a57ee950e8e51ee02da4fb63f39a88c12ef",
+      "original_path": "src/fileworkbench/modules/compare/module.py"
+    },
+    {
+      "path": "04_compare/api/module.json",
+      "sha256": "d8627ce5ba7bb0ec41dd467e55033e26c6a37cbd79e58c688b8f9bc614058e4a",
+      "original_path": "src/fileworkbench/modules/compare/module.json"
+    },
+    {
+      "path": "04_compare/api/interface.py",
+      "sha256": "2ff25bf994f9e0f0d028d0a3d532c96cb153bfb731680d67db26204d2820b13e",
+      "original_path": "src/fileworkbench/modules/compare/interface.py"
+    },
+    {
+      "path": "05_hash/module/__init__.py",
+      "sha256": "365269777903c9c0fcc978f6a132662b97e088bd23b2f7da63917f50eac2dbf1",
+      "original_path": "src/fileworkbench/modules/hash/__init__.py"
+    },
+    {
+      "path": "05_hash/module/module.py",
+      "sha256": "924dc056f2e3ff505e9e8b364b314e65fe35a9d74b0a8dda77840032553ba979",
+      "original_path": "src/fileworkbench/modules/hash/module.py"
+    },
+    {
+      "path": "05_hash/api/module.json",
+      "sha256": "5d2037862a8ce1ce9bb3b16ab5f541581fdbf1b6953b84005aee49c3ded26c8b",
+      "original_path": "src/fileworkbench/modules/hash/module.json"
+    },
+    {
+      "path": "05_hash/api/interface.py",
+      "sha256": "91082bcaead2fcdafaf4f2b611e7c860bacfbfa719f6d0378b82449554d9c206",
+      "original_path": "src/fileworkbench/modules/hash/interface.py"
+    },
+    {
+      "path": "06_recycle/module/__init__.py",
+      "sha256": "15be42ca303e53c2798429cd4bd9fcb70c7bb76070312db899970810e440fe15",
+      "original_path": "src/fileworkbench/modules/recycle/__init__.py"
+    },
+    {
+      "path": "06_recycle/module/module.py",
+      "sha256": "2f62ab5ac9b384ac4746d5443b529badfee978b997e80825b485232196fcd792",
+      "original_path": "src/fileworkbench/modules/recycle/module.py"
+    },
+    {
+      "path": "06_recycle/api/module.json",
+      "sha256": "6444bb6b61b4f9f21988d92cf6587d4552f6c2a0fb8642a936341947d4dd6741",
+      "original_path": "src/fileworkbench/modules/recycle/module.json"
+    },
+    {
+      "path": "06_recycle/api/interface.py",
+      "sha256": "9969c82a6aefda2ab965490de67e1dc7d3dd12527f1f483f0d6cb6f8de57ec7a",
+      "original_path": "src/fileworkbench/modules/recycle/interface.py"
+    }
+  ]
+}
