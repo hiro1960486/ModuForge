@@ -59,6 +59,9 @@ class TagService:
               'audio' if suffix in {'.mp3','.wav','.flac','.m4a','.ogg','.aac'} else 'other')
         return {'path':str(p.resolve()),'name':p.name,'extension':suffix,'kind':kind,'size_bytes':s.st_size,'modified':datetime.fromtimestamp(s.st_mtime).isoformat(timespec='seconds'),'tags':self.list_tags(p)}
     def plan_move(self,path,destination):
+        # 空欄を Path('') に渡すと起動フォルダーになるため、解決前に拒否する。
+        if destination is None or not str(destination).strip():
+            raise ValueError('移動先フォルダーを指定してください')
         source=Path(path).expanduser().resolve(strict=True)
         if not source.is_file():raise ValueError('ファイルのみ移動できます')
         dest_folder=Path(destination).expanduser().resolve(strict=True)

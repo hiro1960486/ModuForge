@@ -48,6 +48,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(target.read_bytes(),b'keep');self.assertTrue(self.f.exists())
     def test_same_dir_rejected(self):
         with self.assertRaises(ValueError):self.s.plan_move(self.f,self.inbox)
+    def test_blank_destination_rejected_without_changes(self):
+        self.s.set_tags(self.f,'試験')
+        for destination in ('', '   ', '\t\n', None):
+            with self.subTest(destination=destination):
+                with self.assertRaisesRegex(ValueError,'移動先フォルダーを指定'):
+                    self.s.plan_move(self.f,destination)
+                with self.assertRaisesRegex(ValueError,'移動先フォルダーを指定'):
+                    self.s.move(self.f,destination,confirm=True)
+                self.assertEqual(self.f.read_bytes(),b'example bytes')
+                self.assertEqual(self.s.list_tags(self.f),['試験'])
+                self.assertEqual(list(self.dest.iterdir()),[])
     def test_invalid_source_rejected(self):
         with self.assertRaises(FileNotFoundError):self.s.set_tags(self.base/'missing','tag')
     def test_assembly_and_manifest(self):
