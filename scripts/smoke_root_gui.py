@@ -14,6 +14,8 @@ import traceback
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# Script launched from scripts/: make root-level run_component importable.
+sys.path.insert(0, str(ROOT))
 MODULES = ("tree", "rename", "preview", "compare", "hash",
            "recycle", "tags", "organizer")
 
