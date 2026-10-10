@@ -1,0 +1,31 @@
+name: ModuForge staged acceptance
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/test_staged_acceptance.py'
+      - 'scripts/restructure_safe.py'
+      - '.github/workflows/staged-acceptance.yml'
+      - 'FW33/**'
+permissions:
+  contents: read
+jobs:
+  readonly-acceptance:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Confirm original tests
+        run: python FW33/run_tests.py
+      - name: Inspect original without mutation
+        run: python scripts/restructure_safe.py
+      - name: Stage copied structure
+        run: python scripts/restructure_safe.py --stage
+      - name: Validate staged test suite
+        run: python scripts/validate_staging.py
+      - name: Run isolated contract and data checks
+        run: python scripts/test_staged_acceptance.py
