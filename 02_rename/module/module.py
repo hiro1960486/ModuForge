@@ -260,6 +260,8 @@ class RenameModule(ModuleWidget):
                 display_text = Path(full_text).name if c in (0, 1) else full_text
                 item = SortableItem(display_text)
                 item.setToolTip(full_text)
+                if c in (0, 1):
+                    item.setData(Qt.UserRole, full_text)
                 self.table.setItem(i, c, item)
         self.table.setSortingEnabled(True)
 
