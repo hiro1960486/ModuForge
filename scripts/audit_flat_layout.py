@@ -14,7 +14,7 @@ MODULES = {"00_shared","01_tree","02_rename","03_preview","04_compare",
 EXCLUDED_DIRS = {".git","__pycache__",".pytest_cache",".venv","venv",
                  "test_output","build","dist"}
 EXCLUDED_EXTS = {".pyc",".pyo",".log",".tmp",".bak",".zip"}
-MODIFIED_DOCS = {"tests/README.md", "03_preview/module/module.py", "03_preview/api/interface.py"}  # Updated to document the new root test entrypoint.
+MODIFIED_DOCS = {"run_tests.py","tests/README.md", "03_preview/module/module.py", "03_preview/api/interface.py"}  # Updated to document the new root test entrypoint.
 MODIFIED_BATS = {"run_tags.bat","run_organizer.bat","test_tags.bat",
                  "test_organizer.bat","test_all.bat"}
 

@@ -23,7 +23,7 @@ def main():
     sys.path.insert(0,str(ROOT))
     tests=ROOT/'tests'
     loader=unittest.TestLoader()
-    if args.module in ('tags','organizer'):
+    if args.module in ('rename','tags','organizer'):
         suite=loader.discover(str(tests),pattern='test_'+args.module+'.py',top_level_dir=str(tests))
     else:
         suite=loader.discover(str(tests),pattern='test_*.py',top_level_dir=str(tests))
