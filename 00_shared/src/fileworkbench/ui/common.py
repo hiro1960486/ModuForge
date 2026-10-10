@@ -57,12 +57,12 @@ def run_job(parent,label,function):
     state={'result':None,'error':''}
     job.result_ready.connect(lambda value:state.update(result=value))
     job.failed.connect(lambda value:state.update(error=value))
-    dialog.canceled.connect(job.cancel.set);job.finished.connect(dialog.close)
+    dialog.canceled.connect(job.cancel.set);job.finished.connect(dialog.hide)
     parent.setProperty('operation_busy',True)
     job.start();dialog.show()
     while job.isRunning():
         QApplication.processEvents();job.wait(15)
-    QApplication.processEvents();dialog.close();parent.setProperty('last_job_cancelled',job.cancel.is_set());job.deleteLater();parent.setProperty('operation_busy',False)
+    QApplication.processEvents();dialog.blockSignals(True);dialog.close();dialog.deleteLater();parent.setProperty('last_job_cancelled',job.cancel.is_set());job.deleteLater();parent.setProperty('operation_busy',False)
     if state['error']:raise RuntimeError(state['error'])
     return state['result']
 
