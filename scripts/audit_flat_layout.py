@@ -57,7 +57,11 @@ def main():
                 script = new_file.read_text(encoding="utf-8-sig")
                 if "%~dp0.." not in script or "run_" not in src.name and "run_tests.py" not in script:
                     errors.append("Invalid migrated BAT: " + str(dest))
-            elif dest.as_posix() in MODIFIED_DOCS:\n                # Preserve the old document under FW33 while updating canonical docs.\n                pass\n            else:\n                errors.append("Unexpected difference: " + str(dest))
+            elif dest.as_posix() in MODIFIED_DOCS:
+                # Preserve the old document under FW33 while updating canonical docs.
+                pass
+            else:
+                errors.append("Unexpected difference: " + str(dest))
         if dest.parts[0] == "migration_review":
             reviewed.append(str(dest))
     if set(intentional) != {"scripts/" + x for x in MODIFIED_BATS}:
