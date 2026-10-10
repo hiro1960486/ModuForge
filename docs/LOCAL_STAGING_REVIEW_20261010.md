@@ -18,3 +18,11 @@
 この一覧は内容一致を証明しない。未照合の資料および除外した環境/ビルドの保持のため、stagingは削除せず保管名へ変更する。
 実際の名称変更と新ルートWindows試験は利用者PCの結果を待つ。
 main統合・FW33撤去・正式リリースは未完了。FileWorkbench-Nextへは組み込まない。
+
+## Windows追記（18:51〜18:53 JST）
+- 利用者PCで3f5cfbfへfast-forward、リポジトリ直下からpython run_tests.pyを実行。
+- Ran 44 tests in 3.793s / OK。表示された全試験はok、スキップ表示なし。
+- PowerShellのRename-ItemはAccess deniedで失敗。原因は特定していない。
+- その後、Explorerの提供画像でModuForge_staging_ARCHIVE_20261010という名称を確認。
+- 手元の現行作業先はModuForge、stagingは保管用。内容は削除しない。
+- 新ルート8部品の目視確認、全機能受入、依存ライセンス確認、main統合は未完了。
