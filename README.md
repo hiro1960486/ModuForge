@@ -59,3 +59,7 @@ Windowsで`FW33/test_all.bat`を実行すると一括試験、`FW33/test_chord/t
 GitHub Actionsで非GUIユニット試験を実行します。Windows GUI操作、実際のごみ箱連携、メディア再生は別途Windows実機で検証します。
 
 **License:** 初期ソースに含まれる`FW33/LICENSE.txt`等の記載を確認してください。リポジトリ全体の統一ライセンスは別途確定します。
+
+## 正式な管理先と整理方針
+
+[3プロジェクトの役割・移行順序・未完了条件](docs/REPOSITORY_CONSOLIDATION_20261010.md)を参照してください。再利用部品はModuForge、Nextの統合アプリと配布はFileWorkbench-Next、従来版の履歴はFileWorkbenchで管理します。管理先の統一と正式版リリースの判定は別です。
