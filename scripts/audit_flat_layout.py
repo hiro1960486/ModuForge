@@ -15,6 +15,12 @@ EXCLUDED_DIRS = {".git","__pycache__",".pytest_cache",".venv","venv",
                  "test_output","build","dist"}
 EXCLUDED_EXTS = {".pyc",".pyo",".log",".tmp",".bak",".zip"}
 MODIFIED_DOCS = {"00_shared/src/fileworkbench/services/naming.py", "00_shared/src/fileworkbench/services/file_operations.py", "00_shared/src/fileworkbench/core/safety.py","02_rename/module/module.py","07_tags/module/service.py","tests/test_tags.py","08_organizer/module/service.py","tests/test_organizer.py","run_tests.py","tests/README.md", "03_preview/module/module.py", "03_preview/api/interface.py"}  # Intentional changes in the new root; legacy files remain preserved.
+# Reviewed fixes: 9144591 (job completion), 5e5496c (Tags drop).
+MODIFIED_DOCS.update({
+    "00_shared/src/fileworkbench/ui/common.py",
+    "07_tags/module/module.py",
+})
+
 MODIFIED_BATS = {"run_tags.bat","run_organizer.bat","test_tags.bat",
                  "test_organizer.bat","test_all.bat"}
 
@@ -37,8 +43,22 @@ def digest(path):
             h.update(block)
     return h.hexdigest()
 
+
+def newline_only_difference(source, target):
+    old, new = source.read_bytes(), target.read_bytes()
+    # NULを含むデータやUTF-8で読めないデータは厳密比較を維持。
+    if b"\x00" in old or b"\x00" in new:
+        return False
+    try:
+        old.decode("utf-8")
+        new.decode("utf-8")
+    except UnicodeDecodeError:
+        return False
+    return old != new and old.replace(b"\r\n", b"\n") == new.replace(b"\r\n", b"\n")
+
 def main():
     errors, intentional, reviewed = [], [], []
+    newline_differences = []
     count = 0
     for src in sorted(SOURCE.rglob("*")):
         if not src.is_file():
@@ -52,7 +72,9 @@ def main():
         if not new_file.is_file():
             errors.append("Missing: " + str(dest))
         elif digest(src) != digest(new_file):
-            if src.name in MODIFIED_BATS and dest == Path("scripts") / src.name:
+            if newline_only_difference(src, new_file):
+                newline_differences.append(dest.as_posix())
+            elif src.name in MODIFIED_BATS and dest == Path("scripts") / src.name:
                 intentional.append(dest.as_posix())
                 script = new_file.read_text(encoding="utf-8-sig")
                 if "%~dp0.." not in script or "run_" not in src.name and "run_tests.py" not in script:
@@ -67,7 +89,9 @@ def main():
     if set(intentional) != {"scripts/" + x for x in MODIFIED_BATS}:
         errors.append("Expected BAT differences not all present: " + repr(intentional))
     print(json.dumps({"files": count, "expected_bat_differences": intentional,
-                      "manual_review_files": reviewed, "errors": errors},
+                      "manual_review_files": reviewed,
+                      "newline_only_differences": newline_differences,
+                      "errors": errors},
                      ensure_ascii=False, indent=2))
     return 1 if errors or count != 133 else 0
 
