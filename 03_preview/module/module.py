@@ -7,12 +7,13 @@ from PySide6.QtCore import Qt, QUrl
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QLabel, QSlider, QFileDialog, QDialog, QTableWidget,
-    QTableWidgetItem, QHeaderView, QMessageBox, QStackedWidget
+    QTableWidgetItem, QHeaderView, QMessageBox, QStackedWidget, QPlainTextEdit
 )
 from PySide6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 
+from .renderers import TEXT, read_content
 from ...ui import ModuleWidget
 from ...core.common import app_icon, choose_folder
 
@@ -83,7 +84,7 @@ class MediaInfoWindow(QDialog):
 class PreviewModule(ModuleWidget):
     module_name = 'プレビュー'
     IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"}
-    SUPPORTED_EXTS = IMAGE_EXTS | {
+    SUPPORTED_EXTS = IMAGE_EXTS | TEXT | {
         ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".webm",
         ".mp3", ".m4a", ".wav", ".flac", ".aac", ".ogg", ".wma"
     }
@@ -128,6 +129,9 @@ class PreviewModule(ModuleWidget):
         self.preview_stack = QStackedWidget(self)
         self.preview_stack.addWidget(self.video_widget)
         self.preview_stack.addWidget(self.image_label)
+        self.text_view = QPlainTextEdit(self)
+        self.text_view.setReadOnly(True)
+        self.preview_stack.addWidget(self.text_view)
         layout.addWidget(self.preview_stack, 1)
 
         self.status_msg = QLabel("再生を押してください。対応形式は搭載コーデックによります")
@@ -329,6 +333,22 @@ class PreviewModule(ModuleWidget):
             self.btn_stop.setEnabled(False)
             self.seek_slider.setEnabled(False)
             self._update_time_label(0, 0)
+        elif path.suffix.lower() in TEXT:
+            self.player.stop()
+            self.player.setSource(QUrl())
+            self._image_pixmap = None
+            self.preview_stack.setCurrentWidget(self.text_view)
+            try:
+                self.text_view.setPlainText(read_content(path))
+                self.status_msg.setText("本文を表示中")
+            except Exception as exc:
+                self.text_view.setPlainText("読み込めませんでした: " + str(exc))
+                self.status_msg.setText("本文の読み込みに失敗")
+            self.btn_play.setEnabled(False)
+            self.btn_pause.setEnabled(False)
+            self.btn_stop.setEnabled(False)
+            self.seek_slider.setEnabled(False)
+            self._update_time_label(0, 0)
         elif path.suffix.lower() in self.SUPPORTED_EXTS:
             self._image_pixmap = None
             self.preview_stack.setCurrentWidget(self.video_widget)
@@ -432,8 +452,8 @@ class PreviewModule(ModuleWidget):
         if self.media_info_dialog is None:
             self.media_info_dialog = MediaInfoWindow(self)
 
-        self._refresh_dialog()
         self.media_info_dialog.show()
+        self._refresh_dialog()
         self.media_info_dialog.raise_()
         self.media_info_dialog.activateWindow()
 
