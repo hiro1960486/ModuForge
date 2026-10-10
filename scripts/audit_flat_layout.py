@@ -14,7 +14,7 @@ MODULES = {"00_shared","01_tree","02_rename","03_preview","04_compare",
 EXCLUDED_DIRS = {".git","__pycache__",".pytest_cache",".venv","venv",
                  "test_output","build","dist"}
 EXCLUDED_EXTS = {".pyc",".pyo",".log",".tmp",".bak",".zip"}
-MODIFIED_BATS = {"run_tags.bat","run_organizer.bat","test_tags.bat",
+MODIFIED_DOCS = {"tests/README.md"}  # Updated to document the new root test entrypoint.\nMODIFIED_BATS = {"run_tags.bat","run_organizer.bat","test_tags.bat",
                  "test_organizer.bat","test_all.bat"}
 
 def destination(relative):
@@ -56,8 +56,7 @@ def main():
                 script = new_file.read_text(encoding="utf-8-sig")
                 if "%~dp0.." not in script or "run_" not in src.name and "run_tests.py" not in script:
                     errors.append("Invalid migrated BAT: " + str(dest))
-            else:
-                errors.append("Unexpected difference: " + str(dest))
+            elif dest.as_posix() in MODIFIED_DOCS:\n                # Preserve the old document under FW33 while updating canonical docs.\n                pass\n            else:\n                errors.append("Unexpected difference: " + str(dest))
         if dest.parts[0] == "migration_review":
             reviewed.append(str(dest))
     if set(intentional) != {"scripts/" + x for x in MODIFIED_BATS}:
