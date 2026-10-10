@@ -22,6 +22,7 @@ MODULES = ("tree", "rename", "preview", "compare", "hash",
 def main() -> int:
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
     from PySide6.QtWidgets import QApplication
+    from PySide6.QtGui import QImage, QColor
     from run_component import assemble
 
     app = QApplication.instance() or QApplication(["ModuForge smoke"])
@@ -41,6 +42,18 @@ def main() -> int:
                         raise AssertionError("create_widget returned None")
                     widget.show()
                     app.processEvents()
+                    if name == "preview":
+                        image_file = Path(temp) / "acceptance_image.png"
+                        image = QImage(320, 180, QImage.Format_RGB32)
+                        image.fill(QColor("skyblue"))
+                        if not image.save(str(image_file), "PNG"):
+                            raise AssertionError("Could not generate PNG fixture")
+                        widget.input_paths([str(image_file)])
+                        app.processEvents()
+                        if widget._image_pixmap is None or widget.image_label.pixmap().isNull():
+                            raise AssertionError("PNG image not rendered in Qt image widget")
+                        if widget.btn_play.isEnabled():
+                            raise AssertionError("Playback button must be disabled for image")
                     widget.close()
                     app.processEvents()
                     outcomes.append({"module": name, "result": "PASS"})
