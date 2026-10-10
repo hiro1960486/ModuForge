@@ -40,6 +40,17 @@ def inventory(root):
     visit(root)
     return files, links, errors
 
+def same_text(left, right):
+    # Normalize line endings only; do not ignore spaces, BOMs or code changes.
+    if left.suffix.lower() not in {'.py', '.md', '.txt', '.json', '.svg', '.yml', '.yaml', '.bat', '.original'}:
+        return False
+    try:
+        a = left.read_bytes().decode('utf-8')
+        b = right.read_bytes().decode('utf-8')
+        return a.replace('\\r\\n', '\\n') == b.replace('\\r\\n', '\\n')
+    except (OSError, UnicodeError):
+        return False
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--staging', type=Path, required=True)
@@ -53,11 +64,14 @@ def main():
     canonical, left_links, left_errors = inventory(root)
     staging, right_links, right_errors = inventory(stage)
     common = canonical.keys() & staging.keys()
+    changed = sorted(p for p in common if canonical[p] != staging[p])
+    line_endings_only = [p for p in changed if same_text(root / p, stage / p)]
     report = {
         'mode': 'READ ONLY - no merge or deletion',
         'canonical_files': len(canonical), 'staging_files': len(staging),
         'identical': sum(canonical[p] == staging[p] for p in common),
-        'different': sorted(p for p in common if canonical[p] != staging[p]),
+        'line_endings_only': line_endings_only,
+        'different': [p for p in changed if p not in line_endings_only],
         'staging_only': sorted(staging.keys() - canonical.keys()),
         'canonical_only': sorted(canonical.keys() - staging.keys()),
         'excluded_directories': sorted(SKIP),
