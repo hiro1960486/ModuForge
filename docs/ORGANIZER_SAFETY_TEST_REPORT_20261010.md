@@ -24,10 +24,19 @@ PR #1はDraft維持。旧FW33とFileWorkbench Next v3.3.0-rc1は変更しない�
 
 python run_tests.py：44件PASS（Organizer14件を含む）。
 旧FW33の133ファイルの配置完全性監査PASS、git diff --check PASS。
-今回のGitHub Actions結果と、修正後Windows GUIでの空欄拒否表示は未確認。
+この修正の初回記録時点ではGitHub ActionsとWindows空欄拒否表示は未確認。Windows追試は下記に記載。
 
 ## 残る検討事項
 
 GUIで計画拒否時にも前回の結果が残る表示は改善候補。
 今回の競合試験は再検証後・排他的作成前の競合を対象とし、あらゆる外部プロセスとの競合の安全性を証明するものではない。
 Organizerによる移動にTagsデータベースの追従保証は含めない。
+
+## Windows追試（16:06〜16:14 JST）
+
+- Windowsでca110f1へのfast-forward更新と最新版一致を確認（070617画像）。
+- tags_move_testが空であることをExplorerで確認（070944）。移動先の本文について利用者は「Test B」と回答。MOVE成功ダイアログと移動先Explorerの画像は未取得のため、本文保持と到着は利用者報告として記録し、画像だけでの移動成功判定とは区別する。
+- 整理先空欄で「整理先フォルダーを指定してください」の安全停止を確認（071243）。この初回画像の対象はフォルダーだった。
+- organizer_move_test内のsample_b.txtを選択する追試を案内後、整理先空欄で同じ安全停止を確認（071408）。上段にはorganizer_move_test配下のパスが見え、末尾のファイル名は入力欄の幅で省略されている。空欄拒否のWindows GUI表示PASS。
+
+今回案内したOrganizerの基本安全性試験は一巡。移動先の完全パス・本文の画像照合やWindows上のSHA256照合、外部プロセスとの全競合検証は完了扱いにしない。
