@@ -1,7 +1,7 @@
 # tests: FileWorkbench Next 3.3 RC v3
 
 ## 一括実行
-ルート `FW33/test_all.bat` または `py run_tests.py`。各試験で `OK` を確認してください。
+ルート `scripts/test_all.bat` または `py run_tests.py`。各試験で `OK` を確認してください。
 
 ## 分類
 - `test_modules_contract.py`: 01〜08のモジュール定義、APIの存在、構文、組み立てを検査（機能/GUIの実動作は未検証）
