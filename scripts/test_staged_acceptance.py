@@ -13,7 +13,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-STAGE = ROOT.parent / (ROOT.name + "_staging")
+STAGE = ROOT if all((ROOT / name).is_dir() for name in ("00_shared", "01_tree", "08_organizer")) else ROOT.parent / (ROOT.name + "_staging")
 MODULES = ("tree", "rename", "preview", "compare",
            "hash", "recycle", "tags", "organizer")
 
