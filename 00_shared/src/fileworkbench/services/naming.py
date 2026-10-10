@@ -55,7 +55,7 @@ def build_plan(paths,rules):
                 stem=date+rules.delimiter+stem if rules.date_position=='prefix' else stem+rules.delimiter+date
             extension='.'+rules.extension.lstrip('.') if rules.extension else path.suffix
             target=path.with_name(stem+extension);validate_name(target.name)
-            status='変更なし' if target==path else 'OK'
+            status='変更なし' if str(target)==str(path) else 'OK'
             if key(target)!=key(path) and (target.exists() or key(target) in reserved):target=unique_planned(target,reserved);status='自動回避'
             reserved.add(key(target));rows.append((path,target,status))
         except Exception as exc:rows.append((path,path,'無効: '+str(exc)))

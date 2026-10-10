@@ -154,7 +154,7 @@ class FileOperationsService:
                     if source.parent!=target.parent:raise ValueError('名前変更は同じフォルダー内で行います')
                     if not source.is_file() or source.is_symlink():raise ValueError('名前変更対象は通常ファイルに限定します')
                     validate_name(target.name)
-                    if source == target:
+                    if str(source) == str(target):
                         result.status='変更なし';self._record(result);results.append(result);continue
                     backup=self._backup(source,'rename');result.history_id=backup['id']
                     if fingerprint(source)!=backup['fingerprint']:raise ValueError('元データが変更されたため中止')

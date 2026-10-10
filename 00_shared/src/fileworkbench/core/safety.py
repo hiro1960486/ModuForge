@@ -30,7 +30,7 @@ def unique_planned(path, reserved):
 def no_replace(src, dst):
     """Windowsのrenameは既存先を上書きしない。他OSではhardlinkで排他確保。"""
     src, dst = Path(src), Path(dst)
-    if src == dst:
+    if str(src) == str(dst):
         return  # An unchanged name is a successful no-op, never overwrite/unlink.
     if os.name == 'nt':
         if key(src) == key(dst) and str(src) != str(dst):
