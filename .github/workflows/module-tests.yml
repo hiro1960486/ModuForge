@@ -14,9 +14,6 @@ jobs:
     name: Unit tests (non-GUI)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: FW33
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +21,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run all non-GUI tests
+      - name: Run root non-GUI tests
         run: python run_tests.py
       - name: Upload diagnostics on failure
         if: failure()
