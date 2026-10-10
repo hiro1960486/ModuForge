@@ -50,12 +50,12 @@ class StagedAcceptance(unittest.TestCase):
             (right / "same.txt").write_bytes(payload)
             (left / "changed.txt").write_bytes(b"before\n")
             (right / "changed.txt").write_bytes(b"after\n")
-            before = {str(p.relative_to(base)): hashlib.sha256(p.read_bytes()).hexdigest()
+            before = {p.relative_to(base).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in base.rglob("*.txt")}
             self.assertEqual(before["Left/same.txt"], before["Right/same.txt"])
             self.assertNotEqual(before["Left/changed.txt"], before["Right/changed.txt"])
             # Verify fixture bytes weren't altered by the read-only checks.
-            after = {str(p.relative_to(base)): hashlib.sha256(p.read_bytes()).hexdigest()
+            after = {p.relative_to(base).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                      for p in base.rglob("*.txt")}
             self.assertEqual(before, after)
 
