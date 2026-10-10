@@ -47,7 +47,7 @@ def same_text(left, right):
     try:
         a = left.read_bytes().decode('utf-8')
         b = right.read_bytes().decode('utf-8')
-        return a.replace('\\r\\n', '\\n') == b.replace('\\r\\n', '\\n')
+        return a.replace('\r\n', '\n') == b.replace('\r\n', '\n')
     except (OSError, UnicodeError):
         return False
 
