@@ -1,9 +1,10 @@
 @echo off
 setlocal
-cd /d "%~dp0"
-py run_tests.py
+set "ROOT=%~dp0.."
+if not exist "%ROOT%\run_tests.py" (
+  echo [ERROR] Missing run_tests.py
+  exit /b 2
+)
+py "%ROOT%\run_tests.py" 
 set "RC=%ERRORLEVEL%"
-echo.
-echo All module tests exit code: %RC%
-pause
 exit /b %RC%
