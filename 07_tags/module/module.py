@@ -1,6 +1,6 @@
 """タグとメディア整理の単独試験用Qt画面。"""
 from pathlib import Path
-from PySide6.QtCore import Qt,QUrl
+from PySide6.QtCore import Qt,QUrl,QEvent
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (QWidget,QVBoxLayout,QHBoxLayout,QPushButton,QLabel,QListWidget,QLineEdit,QFileDialog,QMessageBox,QSplitter,QTextEdit)
 from PySide6.QtMultimedia import QMediaPlayer,QAudioOutput
@@ -21,7 +21,11 @@ class TagsModule(QWidget):
         split=QSplitter(Qt.Orientation.Horizontal);outer.addWidget(split)
         left=QWidget();ll=QVBoxLayout(left);split.addWidget(left)
         ll.addWidget(QLabel('対象ファイル'))
-        self.items=QListWidget();self.items.currentRowChanged.connect(self.display_selected);ll.addWidget(self.items)
+        self.items=QListWidget()
+        self.items.setAcceptDrops(True)
+        self.items.viewport().setAcceptDrops(True)
+        self.items.viewport().installEventFilter(self)
+        self.items.currentRowChanged.connect(self.display_selected);ll.addWidget(self.items)
         self.tag_edit=QLineEdit();self.tag_edit.setPlaceholderText('タグをカンマ区切りで入力');ll.addWidget(self.tag_edit)
         b=QPushButton('タグを保存');b.clicked.connect(self.save_tags);ll.addWidget(b)
         self.find_edit=QLineEdit();self.find_edit.setPlaceholderText('タグ名で検索（完全一致）');ll.addWidget(self.find_edit)
@@ -36,6 +40,33 @@ class TagsModule(QWidget):
         self.info=QTextEdit();self.info.setReadOnly(True);rl.addWidget(self.info)
         btn=QPushButton('選択ファイルを移動（確認あり）');btn.clicked.connect(self.move_selected);rl.addWidget(btn)
         split.setSizes([410,620]);self._pixmap=None
+    def eventFilter(self, obj, event):
+        if obj is self.items.viewport():
+            kind = event.type()
+            if kind in (QEvent.DragEnter, QEvent.DragMove, QEvent.Drop):
+                paths = [
+                    url.toLocalFile()
+                    for url in event.mimeData().urls()
+                    if url.isLocalFile()
+                ]
+                valid = bool(paths) and all(
+                    Path(p).is_file() or Path(p).is_dir() for p in paths
+                )
+                if not valid:
+                    event.ignore()
+                    return True
+                if kind == QEvent.Drop:
+                    try:
+                        self.set_files([*self.paths, *paths])
+                    except Exception as exc:
+                        QMessageBox.warning(self, '読み込み失敗', str(exc))
+                        event.ignore()
+                        return True
+                event.setDropAction(Qt.CopyAction)
+                event.accept()
+                return True
+        return super().eventFilter(obj, event)
+
     def bind_port(self,port):self.port=port
     def emit(self,name,payload):
         if self.port:self.port.emit(name,payload)
