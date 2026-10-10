@@ -1,4 +1,5 @@
 import ast
+from unittest.mock import patch
 import unittest,tempfile,sys,os
 from pathlib import Path
 HERE=Path(__file__).resolve().parents[1]
@@ -13,6 +14,41 @@ class OrganizerTests(unittest.TestCase):
         self.a=self.base/'a';self.b=self.base/'b';self.a.mkdir();self.b.mkdir();self.file=self.a/'test.txt';self.file.write_text('hello',encoding='utf-8');self.s=m.OrganizerService()
     def test_plan_only(self):
         p=self.s.plan(self.file,self.b);self.assertTrue(self.file.exists());self.assertFalse(Path(p['target']).exists())
+    def test_blank_destination_rejected_without_mutation(self):
+        for action in ('copy','move'):
+            for blank in ('', '   ', '\t\n', None):
+                with self.subTest(action=action,blank=blank):
+                    with self.assertRaisesRegex(ValueError,'整理先フォルダー'):
+                        self.s.plan(self.file,blank,action)
+                    self.assertEqual(self.file.read_bytes(),b'hello')
+                    self.assertEqual(list(self.b.iterdir()),[])
+    def test_blank_source_rejected(self):
+        for blank in ('', '   ', '\t\n', None):
+            with self.subTest(blank=blank):
+                with self.assertRaisesRegex(ValueError,'整理対象ファイル'):
+                    self.s.plan(blank,self.b)
+    def test_copy_collision_after_validation_preserves_existing_file(self):
+        plan=self.s.plan(self.file,self.b)
+        target=self.b/'test.txt'
+        original_plan=self.s.plan
+        def competing_plan(*args,**kwargs):
+            fresh=original_plan(*args,**kwargs)
+            target.write_bytes(b'competing file')
+            return fresh
+        with patch.object(self.s,'plan',side_effect=competing_plan):
+            with self.assertRaises(FileExistsError):
+                self.s.execute(plan,confirm=True)
+        self.assertEqual(target.read_bytes(),b'competing file')
+        self.assertEqual(self.file.read_bytes(),b'hello')
+    def test_failed_copy_removes_own_partial_target(self):
+        plan=self.s.plan(self.file,self.b)
+        def fail_copy(inp,out,*args):
+            out.write(b'partial')
+            raise OSError('simulated copy failure')
+        with patch.object(m.shutil,'copyfileobj',side_effect=fail_copy):
+            with self.assertRaises(OSError):self.s.execute(plan,confirm=True)
+        self.assertFalse((self.b/'test.txt').exists())
+        self.assertEqual(self.file.read_bytes(),b'hello')
     def test_confirm_required(self):
         with self.assertRaises(PermissionError):self.s.execute(self.s.plan(self.file,self.b))
     def test_copy_preserves_source(self):
