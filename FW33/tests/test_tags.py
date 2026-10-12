@@ -30,7 +30,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(self.s.inspect(self.f)['kind'],'image')
     def test_plan_does_not_move(self):
         plan=self.s.plan_move(self.f,self.dest)
-        self.assertTrue(self.f.exists());self.assertEqual(os.path.normcase(plan['target']),os.path.normcase(str(self.dest/'sample.jpg')))
+        self.assertTrue(self.f.exists())
+        # Windows 8.3 short path names (RUNNER~1) and long names can refer to
+        # the same directory; compare filesystem identity, not path spelling.
+        planned = Path(plan['target'])
+        self.assertEqual(planned.name, 'sample.jpg')
+        self.assertTrue(planned.parent.samefile(self.dest))
         with self.assertRaises(PermissionError):self.s.move(self.f,self.dest)
         self.assertTrue(self.f.exists())
     def test_move_and_tags_follow(self):

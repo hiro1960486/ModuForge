@@ -1,0 +1,42 @@
+name: Flat root layout verification
+on:
+  pull_request:
+    paths:
+      - '00_shared/**'
+      - '0[1-8]_*/**'
+      - 'run_component.py'
+      - 'run_tests.py'
+      - 'requirements.txt'
+      - 'tests/**'
+      - 'scripts/*.bat'
+      - '.github/workflows/flat-root-verification.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-root:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Verify all modules are present
+        shell: pwsh
+        run: |
+          foreach ($folder in @('00_shared','01_tree','02_rename','03_preview','04_compare','05_hash','06_recycle','07_tags','08_organizer')) {
+            if (-not (Test-Path $folder)) { throw "Missing component: $folder" }
+          }
+      - name: Run tests against new root layout
+        run: python run_tests.py
+      - name: Verify launcher BAT paths
+        shell: pwsh
+        run: |
+          foreach ($file in @('run_tags.bat','run_organizer.bat','test_tags.bat','test_organizer.bat','test_all.bat')) {
+            $path = Join-Path 'scripts' $file
+            if (-not (Test-Path $path)) { throw "Missing launcher: $path" }
+            $text = Get-Content $path -Raw
+            if (-not $text.Contains('%~dp0..')) { throw "Invalid root path: $path" }
+          }

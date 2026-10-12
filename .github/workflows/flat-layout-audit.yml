@@ -1,0 +1,26 @@
+name: Flat layout completeness audit
+on:
+  pull_request:
+    paths:
+      - 'FW33/**'
+      - '00_shared/**'
+      - '0[1-8]_*/**'
+      - 'migration_review/**'
+      - 'scripts/audit_flat_layout.py'
+      - 'scripts/*.bat'
+      - '.github/workflows/flat-layout-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  completeness:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit source preservation and five intentional BAT changes
+        run: python scripts/audit_flat_layout.py
+      - name: Run root-layout non-GUI regression suite
+        run: python run_tests.py

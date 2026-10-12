@@ -1,0 +1,14 @@
+FileWorkbench Next 3.3 RC GUI修正 v3
+
+修正対象: 08_organizer/module/module.py / api/module.json
+現象: OrganizerModule.bind_port がなく起動時 AttributeError
+原因: 共通 WidgetModuleAdapter の接続規約との不整合
+
+手順:
+1. 古い試験版ウィンドウをすべて終了。
+2. このZIPを新しいフォルダーに展開。
+3. FW33\test_all.bat を実行。
+4. FW33\run_organizer.bat を実行。
+5. 画面が開くか、ダミーデータで確認・コピーの操作ができるか確認。
+
+本パッケージは研究・試験用です。実データの移動を避けてください。

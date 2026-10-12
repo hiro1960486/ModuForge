@@ -21,20 +21,20 @@ ModuForgeは、複数のPythonアプリから再利用できるモジュール�
 
 | フォルダー | 機能 |
 |---|---|
-| `FW33/01_tree` | ツリー構造 |
-| `FW33/02_rename` | 一括リネーム |
-| `FW33/03_preview` | プレビュー |
-| `FW33/04_compare` | 比較 |
-| `FW33/05_hash` | ハッシュ・重複 |
-| `FW33/06_recycle` | ごみ箱・復元 |
-| `FW33/07_tags` | タグ・メディア情報 |
-| `FW33/08_organizer` | ファイル整理 |
+| `01_tree` | ツリー構造 |
+| `02_rename` | 一括リネーム |
+| `03_preview` | プレビュー |
+| `04_compare` | 比較 |
+| `05_hash` | ハッシュ・重複 |
+| `06_recycle` | ごみ箱・復元 |
+| `07_tags` | タグ・メディア情報 |
+| `08_organizer` | ファイル整理 |
 
-各部品は `module/`（実装）・`api/`（公開インターフェース）の形で管理します。共通コードは`FW33/00_shared/`です。現時点では各部品に共通基盤への依存があり、完全な独立パッケージ化は未完了です。
+各部品は `module/`（実装）・`api/`（公開インターフェース）の形で管理します。共通コードは`00_shared/`です。現時点では各部品に共通基盤への依存があり、完全な独立パッケージ化は未完了です。
 
 ## 試験
 
-Windowsで`FW33/test_all.bat`を実行すると一括試験、`FW33/test_chord/test_start.bat`で試験用UIを起動できます。Pythonからは`cd FW33 && python run_tests.py`です。
+Windowsで`scripts/test_all.bat`を実行すると一括試験、`test_chord/test_start.bat`で試験用UIを起動できます。Pythonからは`python run_tests.py`です。
 
 初期基準版では非GUIの**21件**をWindowsで合格確認済みです。既存6部品は主に構成・組み立ての検査であり、全機能の動作保証ではありません。
 
@@ -66,12 +66,20 @@ Windowsで`FW33/test_all.bat`を実行すると一括試験、`FW33/test_chord/t
 
 GitHub Actionsで非GUIユニット試験を実行します。Windows GUI操作、実際のごみ箱連携、メディア再生は別途Windows実機で検証します。
 
-**License:** 初期ソースに含まれる`FW33/LICENSE.txt`等の記載を確認してください。リポジトリ全体の統一ライセンスは別途確定します。
+**License:** 初期ソースの原本は `FW33/LICENSE.txt`、分類保管版は `migration_review/LICENSE.txt` です。全体の適用範囲は確認中です。
 
-## 正式な管理先と整理方針
+## 再構成作業中
 
-[3プロジェクトの役割・移行順序・未完了条件](docs/REPOSITORY_CONSOLIDATION_20261010.md)を参照してください。再利用部品はModuForge、Nextの統合アプリと配布はFileWorkbench-Next、従来版の履歴はFileWorkbenchで管理します。管理先の統一と正式版リリースの判定は別です。
+現在のルート配置は **`refactor/safe-root-layout` 作業ブランチ**で検証中です。旧 `FW33/` は完全性照合と安全な切り戻しのため保持しています。新構成はまだ `main` に統合されていません。
 
-### 当面の独立開発方針
+- 単独GUI起動: `python run_component.py tree`（他の7部品も指定可）
+- テスト: `python run_tests.py` または `scripts/test_all.bat`
+- API仕様: [接続契約](docs/03_API_CONTRACT.md)
+- 9件の旧資料: [分類台帳](docs/MIGRATION_DOCUMENT_INVENTORY.md)
+- 受入試験: [チェックリスト](docs/FUNCTIONAL_ACCEPTANCE_CHECKLIST.md)
 
-ModuForgeとFileWorkbench-Nextは、当面それぞれ独立して開発・試験・版管理を進めます。現段階で部品の同期や取り込み、版の連動は行いません。ModuForgeのモジュール・APIが整った後、必要な部品をNextへ組み込む作業を別途行います。
+GUI表示と機能動作の合否は区別してください。ファイルの移動・リネーム・復元は複製データ以外に対して試験しないでください。
+
+## 正式な管理先と独立開発
+
+[管理方針](docs/REPOSITORY_CONSOLIDATION_20261010.md)に従い、ModuForgeとFileWorkbench-Nextは独立して開発・試験・版管理します。部品が整った後のNextへの組み込みは別作業です。

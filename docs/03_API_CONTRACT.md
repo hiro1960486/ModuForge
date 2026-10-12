@@ -2,11 +2,11 @@
 
 ModuForgeの「API」は主にPythonプロセス内のモジュール接続インターフェースであり、HTTP APIではありません。
 
-- 公開宣言: `FW33/<番号>_<モジュール>/api/module.json`
+- 公開宣言: `<番号>_<モジュール>/api/module.json`
 - 接続実装: `api/interface.py`
 - 処理と画面: `module/module.py` と必要なサービス
-- 共通契約: `FW33/00_shared/src/fileworkbench/interfaces/contracts.py`
-- 共通アダプター: `FW33/00_shared/src/fileworkbench/interfaces/adapter.py`
+- 共通契約: `00_shared/src/fileworkbench/interfaces/contracts.py`
+- 共通アダプター: `00_shared/src/fileworkbench/interfaces/adapter.py`
 
 ## 設計指針
 - 接続部は命令・入力・結果・エラーを正しく伝え、アプリ固有の判断を持ち込み過ぎない
@@ -14,3 +14,9 @@ ModuForgeの「API」は主にPythonプロセス内のモジュール接続イ�
 - コピー・移動等の破壊的操作は、UI表示だけでなく操作側でも安全条件を確認する
 - モジュール単体の合格とアプリ統合時の合格を明確に区別する
 - APIの互換性が変わるときはバージョンと試験を更新する
+
+## 構造移行中の互換性ルール
+- 公開インターフェースの変更は `api/module.json` のバージョンと対応する試験を同じPRで更新する。
+- ルート配置の変更と、APIの仕様変更は別々にレビューする。
+- `FW33/` は一時的な検証用旧構成として保持している。新コードは原則ルート側を参照する。
+- 単独GUIの初期表示確認は実行時APIの完全な互換性を保証しない。実機能・異常系試験が必要。

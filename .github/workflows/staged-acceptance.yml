@@ -1,0 +1,24 @@
+name: ModuForge staged acceptance
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  readonly-acceptance:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Check original test suite
+        run: python FW33/run_tests.py
+      - name: Audit migrated tree
+        run: python scripts/audit_flat_layout.py
+      - name: Verify root tests
+        run: python run_tests.py
+      - name: Run additional isolated fixture and contract tests
+        run: python scripts/test_staged_acceptance.py

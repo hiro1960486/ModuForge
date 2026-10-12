@@ -1,0 +1,22 @@
+name: Safe layout migration validation
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  staging-and-tests:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Confirm preserved FW33 tests
+        run: python FW33/run_tests.py
+      - name: Verify copied root against preserved FW33
+        run: python scripts/audit_flat_layout.py
+      - name: Run migrated root tests
+        run: python run_tests.py

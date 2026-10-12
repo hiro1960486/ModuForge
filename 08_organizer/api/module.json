@@ -1,0 +1,24 @@
+{
+  "id": "organizer",
+  "name": "ファイル整理",
+  "version": "0.1.0-test",
+  "icon": "preview_color.svg",
+  "entrypoint": "fileworkbench.modules.organizer.module",
+  "interface_entrypoint": "fileworkbench.modules.organizer.interface",
+  "capabilities": [
+    "file.inspect",
+    "file.plan",
+    "file.copy",
+    "file.move"
+  ],
+  "accepted_inputs": [
+    "files"
+  ],
+  "emitted_events": [],
+  "commands": [
+    "inspect",
+    "plan",
+    "execute"
+  ],
+  "description": "確認必須の安全なファイル整理試験用"
+}

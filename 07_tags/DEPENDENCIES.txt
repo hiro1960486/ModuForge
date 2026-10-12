@@ -1,0 +1,1 @@
+PySide6 QtWidgets/QtGui/QtMultimedia/QtMultimediaWidgets; Python standard library sqlite3, shutil, pathlib; 00_shared interfaces + module_registry
