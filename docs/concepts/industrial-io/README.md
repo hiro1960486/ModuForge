@@ -1,0 +1,82 @@
+# Industrial I/O — 産業機器統合監視・制御 検討構想
+
+> **Status: PROPOSAL / 未実装 / 実機未検証**  
+> Ver.0.1 — 2026-10-12  
+> 本ページはModuForgeの将来検討資料です。現在のModuForgeで実現済みの機能を示すものではありません。
+
+## 目的
+
+ModuForgeのモジュール・API分離思想を使い、電力計測器、温湿度センサー、接点I/O、PLC等の**監視と制御の統合**を検討します。通信アダプターを機種別に分離し、上位UI、履歴、警報、操作権限、監査機能を再利用可能にします。
+
+## 論理アーキテクチャ
+
+```text
+PySide6 / Web UI
+  └── 認証・認可付き共通API
+      └── ModuForge コア
+          ├── DeviceRegistry / ConnectionManager
+          ├── DataCollector / DataNormalizer
+          ├── HistoricalStorage / AlarmEngine
+          ├── ControlEngine / SafetyInterlock / AuditLogger
+          └── ProtocolAdapters
+              ├── RS-485 / Modbus RTU（機種対応時）
+              ├── LAN / 公式に提供される取得手段
+              └── Simulator（仮想機器）
+```
+
+## 共通モジュール候補
+
+| 分類 | モジュール | 責務 |
+| --- | --- | --- |
+| 基盤 | DeviceRegistry | 機器・タグ・能力・設定を登録 |
+| 通信 | ConnectionManager | 接続・切断・再接続・診断 |
+| 通信 | ProtocolAdapters | メーカー・機種依存の通信実装 |
+| 監視 | DataCollector | データの周期取得と欠測検知 |
+| 監視 | DataNormalizer | 値・単位・時刻・品質の正規化 |
+| 記録 | HistoricalStorage | 履歴保存・エクスポート |
+| 監視 | AlarmEngine | 閾値と異常イベント |
+| 制御 | ControlEngine | 制御要求の審査・実行・結果確認 |
+| 安全 | SafetyInterlock | アプリ側の許可条件の評価 |
+| 監査 | AuditLogger | 操作者・指令・応答・実状態を記録 |
+| 試験 | Simulator | 仮想機器での正常系・異常系の検証 |
+
+## 共通ドライバー契約（案）
+
+- `connect()` / `disconnect()`
+- `read_points()` / `read_status()`
+- `get_capabilities()`
+- `validate_command()` / `execute_command()` / `verify_result()` — 書き込みに対応した機器・適切な権限に限る
+
+標準状態は**読み取り専用**。読み取り専用機器には書き込みAPIを公開しません。取得レコードは `device_id`, `point_id`, `value`, `unit`, `timestamp`, `quality` を基本項目とします。
+
+## 制御に関する必須前提
+
+1. 権限確認 → 制御対象・条件確認 → 操作者確認 → コマンド送信 → 実状態照合 → 監査記録の順とする。
+2. 通信コマンド成功と設備の実動作成功を区別し、可能なら独立したフィードバック入力で確認する。
+3. 非常停止・安全インターロック・通信断／停電時の安全設計をアプリから独立した現場設備側で担保する。
+4. 装置をインターネットへ直接公開しない。認証、セグメント分離、必要なら安全なゲートウェイを設ける。
+5. 本構想は実機の安全性・接続可能性・外部制御可否を保証しない。
+
+## 開発計画（案）
+
+1. **Phase 1** — 共通API、仮想機器、監視UI、単体・異常系テスト
+2. **Phase 2** — 対象機種仕様を調査し、読み取り専用で接続試験
+3. **Phase 3** — 制御要求管理・権限・安全条件を実装し試験設備で検証
+4. **Phase 4** — 別メーカーへのアダプター拡張、Web UI展開
+
+## 要確認項目
+
+- メーカー・型番・ファームウェアと正式通信資料
+- 実際にサポートされる物理層／プロトコル／レジスタ／データ取得周期
+- 書き込み・外部接点制御の提供有無と必要な権限
+- 制御対象の危険度、現場インターロック、通信断・復電時の挙動
+- 標準認証、ネットワーク構成、ログ保持、試験条件
+- 資料・写真・メーカー仕様の転載利用条件
+
+## 成果物と管理
+
+- PowerPoint構想案：`ModuForge_Industrial_IO_Concept_v0.1.pptx`（別途作成。GitHubへのバイナリ登録は未実施）
+- GitHub Issueで調査・PoCを追跡
+- 実装を始める前に公開資料と確認済み仕様を分離して改訂する
+
+参考：パナソニック等の多回路エネルギー監視システムを想定例としているが、実機型番・機能適合は未確定。
