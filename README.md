@@ -54,6 +54,14 @@ Windowsで`FW33/test_all.bat`を実行すると一括試験、`FW33/test_chord/t
 - [既知の制限](docs/05_KNOWN_LIMITATIONS.md)
 - [変更履歴](CHANGELOG.md)
 
+
+## 公開資料ライブラリ
+
+- [開発資料公開室（Google Drive・閲覧用）](https://drive.google.com/drive/folders/1LNXJLESZWZ37oeZSP2_McYiSDEVtcDVC)
+- [公開資料の一覧と位置づけ](docs/PUBLIC_DOCUMENTS.md)
+
+構想資料には**未実装・未検証**の内容を含みます。GitHubのソースコードの状態や安全性の保証と混同しないでください。
+
 ## CI
 
 GitHub Actionsで非GUIユニット試験を実行します。Windows GUI操作、実際のごみ箱連携、メディア再生は別途Windows実機で検証します。
